@@ -1,3 +1,4 @@
 __pycache__/
 *.pyc
 P2/lib
+.DS_Store
