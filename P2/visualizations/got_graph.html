@@ -1,0 +1,259 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 800px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97C2FC", "font": {"color": "white"}, "id": 0, "label": "Addam", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 1, "label": "Aegon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 2, "label": "Aerys", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 3, "label": "Allister", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 4, "label": "Arya", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 5, "label": "Assassin", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 6, "label": "Baelor", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 7, "label": "Balon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 8, "label": "Barristan", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 9, "label": "Benjen", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 10, "label": "Beric", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 11, "label": "Borcas", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 12, "label": "Bowen", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 13, "label": "Bran", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 14, "label": "Brandon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 15, "label": "Bronn", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 16, "label": "Catelyn", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 17, "label": "Cersei", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 18, "label": "Cohollo", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 19, "label": "Daenerys", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 20, "label": "Dareon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 21, "label": "Doreah", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 22, "label": "Drogo", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 23, "label": "Galbart", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 24, "label": "Gared", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 25, "label": "Gendry", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 26, "label": "Greatjon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 27, "label": "Grenn", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 28, "label": "High Septon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 29, "label": "Hodor", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 30, "label": "Hoster", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 31, "label": "Hot Pie", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 32, "label": "Sandor", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 33, "label": "Hugh of the Vale", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 34, "label": "Illyrio", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 35, "label": "Ilyn", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 36, "label": "Irogenia", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 37, "label": "Irri", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 38, "label": "Jaime", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 39, "label": "Janos", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 40, "label": "Jaremy", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 41, "label": "Jeor", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 42, "label": "Jhiqui", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 43, "label": "Joanna", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 44, "label": "Joffrey", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 45, "label": "Jon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 46, "label": "Jon Arryn", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 47, "label": "Jonos", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 48, "label": "Jorah", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 49, "label": "Jory", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 50, "label": "Joyeuse", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 51, "label": "Kevan", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 52, "label": "Lancel", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 53, "label": "Leo", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 54, "label": "Little Bird", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 55, "label": "Petyr", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 56, "label": "Lommy", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 57, "label": "Loras", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 58, "label": "Luke", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 59, "label": "Lyanna", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 60, "label": "Lysa", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 61, "label": "Mac", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 62, "label": "Aemon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 63, "label": "Luwin", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 64, "label": "Mago", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 65, "label": "Marillion", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 66, "label": "Masha", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 67, "label": "Melessa", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 68, "label": "Meryn", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 69, "label": "Mhaegen", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 70, "label": "Mirri Maz Dur", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 71, "label": "Mord", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 72, "label": "Gregor", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 73, "label": "Mycah", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 74, "label": "Myrcella", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 75, "label": "Ned", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 76, "label": "Old Nan", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 77, "label": "Osha", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 78, "label": "Othell", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 79, "label": "Othor", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 80, "label": "Pycelle", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 81, "label": "Pyp", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 82, "label": "Qotho", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 83, "label": "Rakharo", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 84, "label": "Randyll", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 85, "label": "Rast", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 86, "label": "Renly", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 87, "label": "Rhaegar", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 88, "label": "Rhaego", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 89, "label": "Rickard Karstark", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 90, "label": "Rickard Stark", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 91, "label": "Rickon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 92, "label": "Robb", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 93, "label": "Robert", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 94, "label": "Robin", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 95, "label": "Rodrik", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 96, "label": "Roose", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 97, "label": "Ros", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 98, "label": "Royce", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 99, "label": "Ryger", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 100, "label": "Sam", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 101, "label": "Sansa", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 102, "label": "Septa Mordane", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 103, "label": "Shae", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 104, "label": "Shagga", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 105, "label": "Stable Boy", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 106, "label": "Stannis", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 107, "label": "Steffon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 108, "label": "Stevron", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 109, "label": "Syrio", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 110, "label": "Theon", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 111, "label": "Tobho Mott", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 112, "label": "Tomard", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 113, "label": "Tommen", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 114, "label": "Tyrion", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 115, "label": "Tysha", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 116, "label": "Tywin", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 117, "label": "Vardis", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 118, "label": "Varly", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 119, "label": "Varys", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 120, "label": "Viserys", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 121, "label": "Walder", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 122, "label": "Waymar", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 123, "label": "Will", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 124, "label": "Wine Merchant", "shape": "dot"}, {"color": "#97C2FC", "font": {"color": "white"}, "id": 125, "label": "Yoren", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": 75, "to": 93, "value": 192}, {"from": 19, "to": 48, "value": 154}, {"from": 45, "to": 100, "value": 121}, {"from": 55, "to": 75, "value": 107}, {"from": 75, "to": 119, "value": 96}, {"from": 19, "to": 22, "value": 91}, {"from": 4, "to": 75, "value": 90}, {"from": 16, "to": 92, "value": 90}, {"from": 15, "to": 114, "value": 86}, {"from": 17, "to": 75, "value": 86}, {"from": 17, "to": 93, "value": 80}, {"from": 55, "to": 119, "value": 73}, {"from": 103, "to": 114, "value": 73}, {"from": 16, "to": 75, "value": 69}, {"from": 44, "to": 101, "value": 69}, {"from": 75, "to": 80, "value": 68}, {"from": 19, "to": 120, "value": 66}, {"from": 101, "to": 102, "value": 64}, {"from": 114, "to": 116, "value": 61}, {"from": 41, "to": 45, "value": 60}, {"from": 92, "to": 110, "value": 60}, {"from": 17, "to": 44, "value": 54}, {"from": 4, "to": 101, "value": 53}, {"from": 13, "to": 63, "value": 53}, {"from": 38, "to": 75, "value": 53}, {"from": 75, "to": 101, "value": 49}, {"from": 13, "to": 92, "value": 48}, {"from": 57, "to": 86, "value": 47}, {"from": 17, "to": 38, "value": 46}, {"from": 19, "to": 70, "value": 45}, {"from": 45, "to": 114, "value": 45}, {"from": 4, "to": 109, "value": 44}, {"from": 49, "to": 75, "value": 44}, {"from": 48, "to": 120, "value": 43}, {"from": 45, "to": 81, "value": 42}, {"from": 16, "to": 114, "value": 41}, {"from": 97, "to": 110, "value": 40}, {"from": 44, "to": 75, "value": 39}, {"from": 17, "to": 101, "value": 36}, {"from": 27, "to": 81, "value": 36}, {"from": 16, "to": 121, "value": 34}, {"from": 19, "to": 21, "value": 34}, {"from": 38, "to": 114, "value": 34}, {"from": 38, "to": 116, "value": 34}, {"from": 9, "to": 45, "value": 33}, {"from": 19, "to": 37, "value": 32}, {"from": 26, "to": 92, "value": 31}, {"from": 71, "to": 114, "value": 31}, {"from": 16, "to": 60, "value": 30}, {"from": 21, "to": 120, "value": 30}, {"from": 48, "to": 83, "value": 30}, {"from": 60, "to": 94, "value": 30}, {"from": 60, "to": 114, "value": 30}, {"from": 75, "to": 86, "value": 30}, {"from": 81, "to": 100, "value": 30}, {"from": 86, "to": 93, "value": 30}, {"from": 13, "to": 75, "value": 29}, {"from": 13, "to": 77, "value": 29}, {"from": 45, "to": 75, "value": 29}, {"from": 13, "to": 16, "value": 28}, {"from": 16, "to": 38, "value": 28}, {"from": 16, "to": 95, "value": 28}, {"from": 19, "to": 82, "value": 28}, {"from": 44, "to": 93, "value": 28}, {"from": 45, "to": 62, "value": 28}, {"from": 22, "to": 120, "value": 27}, {"from": 38, "to": 49, "value": 27}, {"from": 13, "to": 110, "value": 26}, {"from": 16, "to": 55, "value": 26}, {"from": 16, "to": 63, "value": 26}, {"from": 8, "to": 75, "value": 25}, {"from": 34, "to": 120, "value": 25}, {"from": 45, "to": 92, "value": 25}, {"from": 77, "to": 110, "value": 25}, {"from": 4, "to": 44, "value": 24}, {"from": 27, "to": 45, "value": 24}, {"from": 75, "to": 92, "value": 23}, {"from": 8, "to": 93, "value": 22}, {"from": 16, "to": 17, "value": 22}, {"from": 55, "to": 101, "value": 22}, {"from": 104, "to": 114, "value": 22}, {"from": 114, "to": 125, "value": 22}, {"from": 3, "to": 45, "value": 20}, {"from": 4, "to": 45, "value": 20}, {"from": 22, "to": 48, "value": 20}, {"from": 38, "to": 93, "value": 20}, {"from": 13, "to": 45, "value": 19}, {"from": 19, "to": 124, "value": 19}, {"from": 32, "to": 101, "value": 19}, {"from": 55, "to": 80, "value": 19}, {"from": 55, "to": 97, "value": 19}, {"from": 110, "to": 114, "value": 19}, {"from": 3, "to": 100, "value": 18}, {"from": 4, "to": 125, "value": 18}, {"from": 17, "to": 114, "value": 18}, {"from": 9, "to": 114, "value": 17}, {"from": 19, "to": 83, "value": 17}, {"from": 41, "to": 100, "value": 17}, {"from": 55, "to": 86, "value": 17}, {"from": 63, "to": 92, "value": 17}, {"from": 93, "to": 101, "value": 17}, {"from": 97, "to": 114, "value": 17}, {"from": 16, "to": 110, "value": 16}, {"from": 27, "to": 100, "value": 16}, {"from": 32, "to": 44, "value": 16}, {"from": 92, "to": 114, "value": 16}, {"from": 13, "to": 114, "value": 15}, {"from": 16, "to": 93, "value": 15}, {"from": 41, "to": 114, "value": 15}, {"from": 44, "to": 114, "value": 15}, {"from": 44, "to": 119, "value": 15}, {"from": 52, "to": 93, "value": 15}, {"from": 70, "to": 82, "value": 15}, {"from": 75, "to": 125, "value": 15}, {"from": 80, "to": 119, "value": 15}, {"from": 9, "to": 75, "value": 14}, {"from": 13, "to": 91, "value": 14}, {"from": 16, "to": 45, "value": 14}, {"from": 16, "to": 101, "value": 14}, {"from": 44, "to": 65, "value": 14}, {"from": 51, "to": 114, "value": 14}, {"from": 55, "to": 93, "value": 14}, {"from": 8, "to": 17, "value": 13}, {"from": 16, "to": 117, "value": 13}, {"from": 17, "to": 119, "value": 13}, {"from": 19, "to": 88, "value": 13}, {"from": 39, "to": 75, "value": 13}, {"from": 44, "to": 80, "value": 13}, {"from": 63, "to": 110, "value": 13}, {"from": 75, "to": 110, "value": 13}, {"from": 80, "to": 101, "value": 13}, {"from": 25, "to": 75, "value": 12}, {"from": 31, "to": 56, "value": 12}, {"from": 44, "to": 55, "value": 12}, {"from": 44, "to": 68, "value": 12}, {"from": 44, "to": 92, "value": 12}, {"from": 46, "to": 75, "value": 12}, {"from": 51, "to": 116, "value": 12}, {"from": 63, "to": 77, "value": 12}, {"from": 4, "to": 102, "value": 11}, {"from": 13, "to": 29, "value": 11}, {"from": 15, "to": 103, "value": 11}, {"from": 16, "to": 26, "value": 11}, {"from": 16, "to": 119, "value": 11}, {"from": 26, "to": 110, "value": 11}, {"from": 37, "to": 83, "value": 11}, {"from": 68, "to": 109, "value": 11}, {"from": 75, "to": 114, "value": 11}, {"from": 75, "to": 116, "value": 11}, {"from": 80, "to": 93, "value": 11}, {"from": 86, "to": 106, "value": 11}, {"from": 92, "to": 95, "value": 11}, {"from": 93, "to": 119, "value": 11}, {"from": 3, "to": 81, "value": 10}, {"from": 4, "to": 93, "value": 10}, {"from": 16, "to": 94, "value": 10}, {"from": 19, "to": 34, "value": 10}, {"from": 22, "to": 64, "value": 10}, {"from": 32, "to": 75, "value": 10}, {"from": 32, "to": 114, "value": 10}, {"from": 38, "to": 45, "value": 10}, {"from": 38, "to": 92, "value": 10}, {"from": 41, "to": 81, "value": 10}, {"from": 44, "to": 73, "value": 10}, {"from": 48, "to": 124, "value": 10}, {"from": 68, "to": 101, "value": 10}, {"from": 75, "to": 95, "value": 10}, {"from": 75, "to": 106, "value": 10}, {"from": 75, "to": 111, "value": 10}, {"from": 81, "to": 85, "value": 10}, {"from": 3, "to": 41, "value": 9}, {"from": 4, "to": 17, "value": 9}, {"from": 13, "to": 38, "value": 9}, {"from": 13, "to": 76, "value": 9}, {"from": 17, "to": 80, "value": 9}, {"from": 22, "to": 70, "value": 9}, {"from": 34, "to": 119, "value": 9}, {"from": 37, "to": 48, "value": 9}, {"from": 41, "to": 62, "value": 9}, {"from": 69, "to": 75, "value": 9}, {"from": 75, "to": 102, "value": 9}, {"from": 80, "to": 97, "value": 9}, {"from": 86, "to": 119, "value": 9}, {"from": 92, "to": 101, "value": 9}, {"from": 94, "to": 114, "value": 9}, {"from": 95, "to": 114, "value": 9}, {"from": 117, "to": 114, "value": 9}, {"from": 2, "to": 75, "value": 8}, {"from": 6, "to": 75, "value": 8}, {"from": 17, "to": 55, "value": 8}, {"from": 17, "to": 92, "value": 8}, {"from": 19, "to": 64, "value": 8}, {"from": 20, "to": 81, "value": 8}, {"from": 32, "to": 68, "value": 8}, {"from": 48, "to": 70, "value": 8}, {"from": 77, "to": 92, "value": 8}, {"from": 80, "to": 86, "value": 8}, {"from": 93, "to": 116, "value": 8}, {"from": 95, "to": 110, "value": 8}, {"from": 101, "to": 119, "value": 8}, {"from": 2, "to": 93, "value": 7}, {"from": 3, "to": 27, "value": 7}, {"from": 4, "to": 16, "value": 7}, {"from": 4, "to": 25, "value": 7}, {"from": 4, "to": 32, "value": 7}, {"from": 4, "to": 49, "value": 7}, {"from": 4, "to": 105, "value": 7}, {"from": 4, "to": 119, "value": 7}, {"from": 13, "to": 93, "value": 7}, {"from": 15, "to": 16, "value": 7}, {"from": 26, "to": 95, "value": 7}, {"from": 33, "to": 49, "value": 7}, {"from": 45, "to": 85, "value": 7}, {"from": 45, "to": 110, "value": 7}, {"from": 46, "to": 93, "value": 7}, {"from": 49, "to": 55, "value": 7}, {"from": 60, "to": 117, "value": 7}, {"from": 62, "to": 114, "value": 7}, {"from": 63, "to": 114, "value": 7}, {"from": 93, "to": 114, "value": 7}, {"from": 93, "to": 120, "value": 7}, {"from": 4, "to": 92, "value": 6}, {"from": 8, "to": 119, "value": 6}, {"from": 15, "to": 95, "value": 6}, {"from": 22, "to": 34, "value": 6}, {"from": 22, "to": 82, "value": 6}, {"from": 22, "to": 88, "value": 6}, {"from": 27, "to": 85, "value": 6}, {"from": 27, "to": 114, "value": 6}, {"from": 32, "to": 93, "value": 6}, {"from": 33, "to": 75, "value": 6}, {"from": 38, "to": 44, "value": 6}, {"from": 41, "to": 78, "value": 6}, {"from": 41, "to": 79, "value": 6}, {"from": 55, "to": 72, "value": 6}, {"from": 55, "to": 114, "value": 6}, {"from": 62, "to": 81, "value": 6}, {"from": 62, "to": 100, "value": 6}, {"from": 75, "to": 109, "value": 6}, {"from": 75, "to": 112, "value": 6}, {"from": 78, "to": 100, "value": 6}, {"from": 81, "to": 114, "value": 6}, {"from": 85, "to": 100, "value": 6}, {"from": 104, "to": 116, "value": 6}, {"from": 4, "to": 6, "value": 5}, {"from": 4, "to": 13, "value": 5}, {"from": 4, "to": 31, "value": 5}, {"from": 4, "to": 55, "value": 5}, {"from": 4, "to": 68, "value": 5}, {"from": 4, "to": 73, "value": 5}, {"from": 8, "to": 44, "value": 5}, {"from": 9, "to": 92, "value": 5}, {"from": 9, "to": 125, "value": 5}, {"from": 13, "to": 95, "value": 5}, {"from": 15, "to": 60, "value": 5}, {"from": 15, "to": 104, "value": 5}, {"from": 15, "to": 116, "value": 5}, {"from": 16, "to": 71, "value": 5}, {"from": 19, "to": 93, "value": 5}, {"from": 21, "to": 37, "value": 5}, {"from": 22, "to": 83, "value": 5}, {"from": 24, "to": 98, "value": 5}, {"from": 25, "to": 111, "value": 5}, {"from": 32, "to": 55, "value": 5}, {"from": 32, "to": 72, "value": 5}, {"from": 38, "to": 51, "value": 5}, {"from": 38, "to": 55, "value": 5}, {"from": 39, "to": 119, "value": 5}, {"from": 44, "to": 102, "value": 5}, {"from": 45, "to": 78, "value": 5}, {"from": 45, "to": 79, "value": 5}, {"from": 46, "to": 55, "value": 5}, {"from": 46, "to": 60, "value": 5}, {"from": 47, "to": 92, "value": 5}, {"from": 48, "to": 82, "value": 5}, {"from": 60, "to": 71, "value": 5}, {"from": 63, "to": 75, "value": 5}, {"from": 65, "to": 95, "value": 5}, {"from": 65, "to": 114, "value": 5}, {"from": 66, "to": 114, "value": 5}, {"from": 72, "to": 75, "value": 5}, {"from": 86, "to": 101, "value": 5}, {"from": 92, "to": 93, "value": 5}, {"from": 92, "to": 116, "value": 5}, {"from": 92, "to": 121, "value": 5}, {"from": 93, "to": 106, "value": 5}, {"from": 2, "to": 90, "value": 4}, {"from": 3, "to": 85, "value": 4}, {"from": 4, "to": 35, "value": 4}, {"from": 6, "to": 125, "value": 4}, {"from": 8, "to": 38, "value": 4}, {"from": 8, "to": 55, "value": 4}, {"from": 8, "to": 80, "value": 4}, {"from": 13, "to": 17, "value": 4}, {"from": 15, "to": 117, "value": 4}, {"from": 16, "to": 46, "value": 4}, {"from": 16, "to": 65, "value": 4}, {"from": 16, "to": 116, "value": 4}, {"from": 17, "to": 32, "value": 4}, {"from": 19, "to": 119, "value": 4}, {"from": 20, "to": 45, "value": 4}, {"from": 20, "to": 100, "value": 4}, {"from": 24, "to": 123, "value": 4}, {"from": 27, "to": 41, "value": 4}, {"from": 32, "to": 57, "value": 4}, {"from": 33, "to": 55, "value": 4}, {"from": 35, "to": 44, "value": 4}, {"from": 35, "to": 75, "value": 4}, {"from": 35, "to": 101, "value": 4}, {"from": 35, "to": 125, "value": 4}, {"from": 38, "to": 97, "value": 4}, {"from": 38, "to": 110, "value": 4}, {"from": 49, "to": 93, "value": 4}, {"from": 52, "to": 75, "value": 4}, {"from": 55, "to": 102, "value": 4}, {"from": 55, "to": 116, "value": 4}, {"from": 57, "to": 72, "value": 4}, {"from": 57, "to": 75, "value": 4}, {"from": 57, "to": 101, "value": 4}, {"from": 59, "to": 75, "value": 4}, {"from": 70, "to": 83, "value": 4}, {"from": 72, "to": 93, "value": 4}, {"from": 72, "to": 101, "value": 4}, {"from": 73, "to": 101, "value": 4}, {"from": 75, "to": 90, "value": 4}, {"from": 76, "to": 92, "value": 4}, {"from": 98, "to": 123, "value": 4}, {"from": 99, "to": 121, "value": 4}, {"from": 101, "to": 125, "value": 4}, {"from": 103, "to": 116, "value": 4}, {"from": 108, "to": 121, "value": 4}, {"from": 122, "to": 123, "value": 4}, {"from": 0, "to": 51, "value": 3}, {"from": 0, "to": 53, "value": 3}, {"from": 2, "to": 38, "value": 3}, {"from": 2, "to": 87, "value": 3}, {"from": 3, "to": 78, "value": 3}, {"from": 4, "to": 38, "value": 3}, {"from": 4, "to": 80, "value": 3}, {"from": 5, "to": 16, "value": 3}, {"from": 6, "to": 35, "value": 3}, {"from": 7, "to": 110, "value": 3}, {"from": 8, "to": 52, "value": 3}, {"from": 8, "to": 86, "value": 3}, {"from": 10, "to": 75, "value": 3}, {"from": 13, "to": 123, "value": 3}, {"from": 14, "to": 75, "value": 3}, {"from": 15, "to": 71, "value": 3}, {"from": 15, "to": 94, "value": 3}, {"from": 16, "to": 30, "value": 3}, {"from": 16, "to": 44, "value": 3}, {"from": 16, "to": 66, "value": 3}, {"from": 16, "to": 125, "value": 3}, {"from": 17, "to": 35, "value": 3}, {"from": 17, "to": 45, "value": 3}, {"from": 17, "to": 46, "value": 3}, {"from": 17, "to": 52, "value": 3}, {"from": 17, "to": 86, "value": 3}, {"from": 17, "to": 116, "value": 3}, {"from": 18, "to": 22, "value": 3}, {"from": 19, "to": 75, "value": 3}, {"from": 21, "to": 22, "value": 3}, {"from": 21, "to": 124, "value": 3}, {"from": 25, "to": 31, "value": 3}, {"from": 26, "to": 38, "value": 3}, {"from": 26, "to": 116, "value": 3}, {"from": 29, "to": 92, "value": 3}, {"from": 29, "to": 110, "value": 3}, {"from": 29, "to": 114, "value": 3}, {"from": 30, "to": 121, "value": 3}, {"from": 32, "to": 35, "value": 3}, {"from": 37, "to": 42, "value": 3}, {"from": 37, "to": 120, "value": 3}, {"from": 39, "to": 86, "value": 3}, {"from": 41, "to": 75, "value": 3}, {"from": 41, "to": 93, "value": 3}, {"from": 44, "to": 86, "value": 3}, {"from": 44, "to": 116, "value": 3}, {"from": 44, "to": 125, "value": 3}, {"from": 45, "to": 93, "value": 3}, {"from": 45, "to": 123, "value": 3}, {"from": 46, "to": 80, "value": 3}, {"from": 46, "to": 94, "value": 3}, {"from": 48, "to": 88, "value": 3}, {"from": 55, "to": 106, "value": 3}, {"from": 57, "to": 93, "value": 3}, {"from": 59, "to": 93, "value": 3}, {"from": 68, "to": 75, "value": 3}, {"from": 71, "to": 94, "value": 3}, {"from": 71, "to": 117, "value": 3}, {"from": 73, "to": 75, "value": 3}, {"from": 74, "to": 114, "value": 3}, {"from": 75, "to": 81, "value": 3}, {"from": 75, "to": 123, "value": 3}, {"from": 77, "to": 91, "value": 3}, {"from": 82, "to": 83, "value": 3}, {"from": 83, "to": 120, "value": 3}, {"from": 83, "to": 124, "value": 3}, {"from": 85, "to": 114, "value": 3}, {"from": 86, "to": 92, "value": 3}, {"from": 91, "to": 92, "value": 3}, {"from": 94, "to": 117, "value": 3}, {"from": 110, "to": 121, "value": 3}, {"from": 119, "to": 125, "value": 3}, {"from": 0, "to": 116, "value": 2}, {"from": 1, "to": 2, "value": 2}, {"from": 1, "to": 62, "value": 2}, {"from": 2, "to": 8, "value": 2}, {"from": 2, "to": 16, "value": 2}, {"from": 2, "to": 48, "value": 2}, {"from": 2, "to": 62, "value": 2}, {"from": 2, "to": 86, "value": 2}, {"from": 2, "to": 101, "value": 2}, {"from": 2, "to": 102, "value": 2}, {"from": 3, "to": 62, "value": 2}, {"from": 4, "to": 34, "value": 2}, {"from": 4, "to": 56, "value": 2}, {"from": 4, "to": 114, "value": 2}, {"from": 5, "to": 13, "value": 2}, {"from": 5, "to": 92, "value": 2}, {"from": 6, "to": 17, "value": 2}, {"from": 6, "to": 32, "value": 2}, {"from": 6, "to": 44, "value": 2}, {"from": 6, "to": 80, "value": 2}, {"from": 6, "to": 101, "value": 2}, {"from": 7, "to": 114, "value": 2}, {"from": 9, "to": 16, "value": 2}, {"from": 9, "to": 17, "value": 2}, {"from": 9, "to": 41, "value": 2}, {"from": 9, "to": 93, "value": 2}, {"from": 10, "to": 93, "value": 2}, {"from": 11, "to": 20, "value": 2}, {"from": 11, "to": 81, "value": 2}, {"from": 12, "to": 20, "value": 2}, {"from": 12, "to": 81, "value": 2}, {"from": 13, "to": 14, "value": 2}, {"from": 13, "to": 32, "value": 2}, {"from": 14, "to": 16, "value": 2}, {"from": 14, "to": 45, "value": 2}, {"from": 14, "to": 90, "value": 2}, {"from": 15, "to": 51, "value": 2}, {"from": 15, "to": 65, "value": 2}, {"from": 16, "to": 19, "value": 2}, {"from": 16, "to": 32, "value": 2}, {"from": 16, "to": 108, "value": 2}, {"from": 17, "to": 41, "value": 2}, {"from": 17, "to": 59, "value": 2}, {"from": 17, "to": 68, "value": 2}, {"from": 17, "to": 97, "value": 2}, {"from": 17, "to": 106, "value": 2}, {"from": 17, "to": 125, "value": 2}, {"from": 19, "to": 42, "value": 2}, {"from": 19, "to": 101, "value": 2}, {"from": 20, "to": 27, "value": 2}, {"from": 20, "to": 41, "value": 2}, {"from": 20, "to": 58, "value": 2}, {"from": 20, "to": 62, "value": 2}, {"from": 20, "to": 85, "value": 2}, {"from": 21, "to": 36, "value": 2}, {"from": 21, "to": 42, "value": 2}, {"from": 21, "to": 48, "value": 2}, {"from": 22, "to": 37, "value": 2}, {"from": 22, "to": 93, "value": 2}, {"from": 23, "to": 26, "value": 2}, {"from": 23, "to": 47, "value": 2}, {"from": 23, "to": 92, "value": 2}, {"from": 25, "to": 119, "value": 2}, {"from": 25, "to": 125, "value": 2}, {"from": 26, "to": 75, "value": 2}, {"from": 26, "to": 86, "value": 2}, {"from": 26, "to": 89, "value": 2}, {"from": 26, "to": 106, "value": 2}, {"from": 26, "to": 121, "value": 2}, {"from": 28, "to": 75, "value": 2}, {"from": 29, "to": 77, "value": 2}, {"from": 32, "to": 38, "value": 2}, {"from": 32, "to": 92, "value": 2}, {"from": 32, "to": 125, "value": 2}, {"from": 33, "to": 46, "value": 2}, {"from": 33, "to": 72, "value": 2}, {"from": 33, "to": 101, "value": 2}, {"from": 34, "to": 48, "value": 2}, {"from": 35, "to": 68, "value": 2}, {"from": 35, "to": 119, "value": 2}, {"from": 38, "to": 46, "value": 2}, {"from": 38, "to": 90, "value": 2}, {"from": 38, "to": 101, "value": 2}, {"from": 38, "to": 115, "value": 2}, {"from": 39, "to": 55, "value": 2}, {"from": 39, "to": 80, "value": 2}, {"from": 40, "to": 41, "value": 2}, {"from": 40, "to": 78, "value": 2}, {"from": 40, "to": 81, "value": 2}, {"from": 41, "to": 44, "value": 2}, {"from": 43, "to": 114, "value": 2}, {"from": 44, "to": 45, "value": 2}, {"from": 44, "to": 113, "value": 2}, {"from": 44, "to": 123, "value": 2}, {"from": 45, "to": 95, "value": 2}, {"from": 45, "to": 97, "value": 2}, {"from": 46, "to": 119, "value": 2}, {"from": 48, "to": 54, "value": 2}, {"from": 48, "to": 75, "value": 2}, {"from": 48, "to": 119, "value": 2}, {"from": 49, "to": 69, "value": 2}, {"from": 49, "to": 110, "value": 2}, {"from": 50, "to": 121, "value": 2}, {"from": 51, "to": 53, "value": 2}, {"from": 51, "to": 104, "value": 2}, {"from": 52, "to": 86, "value": 2}, {"from": 53, "to": 114, "value": 2}, {"from": 55, "to": 57, "value": 2}, {"from": 55, "to": 69, "value": 2}, {"from": 55, "to": 125, "value": 2}, {"from": 57, "to": 61, "value": 2}, {"from": 58, "to": 81, "value": 2}, {"from": 63, "to": 93, "value": 2}, {"from": 63, "to": 95, "value": 2}, {"from": 63, "to": 101, "value": 2}, {"from": 65, "to": 68, "value": 2}, {"from": 65, "to": 125, "value": 2}, {"from": 67, "to": 100, "value": 2}, {"from": 71, "to": 95, "value": 2}, {"from": 75, "to": 96, "value": 2}, {"from": 75, "to": 97, "value": 2}, {"from": 75, "to": 107, "value": 2}, {"from": 75, "to": 118, "value": 2}, {"from": 76, "to": 110, "value": 2}, {"from": 78, "to": 81, "value": 2}, {"from": 79, "to": 81, "value": 2}, {"from": 79, "to": 100, "value": 2}, {"from": 80, "to": 116, "value": 2}, {"from": 80, "to": 125, "value": 2}, {"from": 84, "to": 100, "value": 2}, {"from": 86, "to": 112, "value": 2}, {"from": 87, "to": 93, "value": 2}, {"from": 88, "to": 120, "value": 2}, {"from": 89, "to": 92, "value": 2}, {"from": 89, "to": 110, "value": 2}, {"from": 92, "to": 106, "value": 2}, {"from": 92, "to": 119, "value": 2}, {"from": 93, "to": 97, "value": 2}, {"from": 93, "to": 113, "value": 2}, {"from": 95, "to": 116, "value": 2}, {"from": 101, "to": 106, "value": 2}, {"from": 106, "to": 112, "value": 2}, {"from": 110, "to": 123, "value": 2}, {"from": 114, "to": 115, "value": 2}, {"from": 114, "to": 119, "value": 2}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
