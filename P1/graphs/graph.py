@@ -34,7 +34,7 @@ class SquareLattice(Graph):
     def __init__(self, n, m):
         self.n = n
         self.m = m
-        self.vertices = list(range(1, n*m + 1))
+        self.vertices = list(range(0, n*m))
         edges = []
         for i in range(0, n):
             for j in range(0, m):
